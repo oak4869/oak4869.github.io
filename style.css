@@ -26,3 +26,12 @@ canvas {
   border-radius: 10px;
   background: white;
 }
+#camera-container, #overlay {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+#overlay {
+  pointer-events: none;
+}
