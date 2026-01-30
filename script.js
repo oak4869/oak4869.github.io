@@ -13,12 +13,17 @@ async function init() {
   );
 
   console.log("model loaded");
+  
+webcam = new tmImage.Webcam(300, 300, true);
+await webcam.setup();
+await webcam.play();
 
-  webcam = new tmImage.Webcam(300, 300, true);
-  await webcam.setup();
-  await webcam.play();
+console.log("canvas =", webcam.canvas);
 
-  document.getElementById("camera-container").appendChild(webcam.canvas);
+document.getElementById("camera-container").appendChild(webcam.canvas);
+
+ 
 }
 
 init();
+
