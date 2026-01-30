@@ -71,9 +71,10 @@ function onFaceResults(results) {
       const box = detection.boundingBox;
 
       let color = "red";
-      if (currentLabel.toLowerCase().includes("mask")) {
-        color = "green";
-      }
+        if (currentLabel === "Mask") {
+            color = "green";
+        }
+
 
       ctx.strokeStyle = color;
       ctx.lineWidth = 4;
