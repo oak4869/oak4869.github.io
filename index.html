@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>Mask Detection Web App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- TensorFlow + Teachable Machine -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h2>😷 ระบบตรวจจับการสวมหน้ากากอนามัย</h2>
+
+  <div id="camera-container"></div>
+
+  <div id="result">
+    กำลังโหลดโมเดล...
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
