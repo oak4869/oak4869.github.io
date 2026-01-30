@@ -48,7 +48,26 @@ async function loop() {
 }
 
 async function predict() {
-  // 🔒 กันซ้ำอีกชั้น
   if (!model || !webcam || !webcam.canvas) return;
 
-  const predictions = awa
+  const predictions = await model.predict(webcam.canvas);
+
+  // 🔍 debug ดูค่าจริง
+  console.log("predictions:", predictions);
+
+  if (!predictions || predictions.length === 0) {
+    document.getElementById("result").innerText = "ไม่พบผลการทำนาย";
+    return;
+  }
+
+  predictions.sort((a, b) => b.probability - a.probability);
+
+  const best = predictions[0];
+  const percent = (best.probability * 100).toFixed(2);
+
+  document.getElementById("result").innerHTML =
+    `ผลลัพธ์: <b>${best.className}</b><br>
+     ความมั่นใจ: <b>${percent}%</b>`;
+}
+
+
