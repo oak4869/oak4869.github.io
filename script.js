@@ -85,10 +85,5 @@ function onFace(results) {
   }
 }
 
-// 📸 บันทึกภาพไว้ใช้ในรายงาน
-function capture() {
-  const link = document.createElement("a");
-  link.download = "mask-detection.png";
-  link.href = webcam.canvas.toDataURL("image/png");
-  link.click();
-}
+
+
