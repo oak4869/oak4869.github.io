@@ -1,35 +1,27 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<head>
   <meta charset="UTF-8">
   <title>Mask Detection Web App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- TensorFlow -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  <!-- TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.16.0/dist/tf.min.js"></script>
 
-  <!-- Teachable Machine -->
-  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
-
-  <!-- MediaPipe -->
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <!-- Teachable Machine Image -->
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 
   <link rel="stylesheet" href="style.css">
-</head>
-
 </head>
 <body>
 
   <h2>😷 ระบบตรวจจับการสวมหน้ากากอนามัย</h2>
 
-  <div id="camera-container"></div>
-  <canvas id="overlay"></canvas>
+  <button onclick="init()">เริ่มใช้งานกล้อง</button>
 
-  <div id="result">
-    กำลังโหลดโมเดล...
-  </div>
+  <div id="camera-container"></div>
+
+  <div id="result">ยังไม่เริ่ม</div>
 
   <script src="script.js"></script>
 </body>
