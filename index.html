@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <title>Mask Detection Web App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Mask Detection App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- TensorFlow.js -->
+  <!-- TensorFlow + Teachable Machine -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.16.0/dist/tf.min.js"></script>
-
-  <!-- Teachable Machine Image -->
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 
-  <link rel="stylesheet" href="style.css">
+  <!-- MediaPipe -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <h2>😷 ระบบตรวจจับการสวมหน้ากากอนามัย</h2>
+  <header>😷 Mask Detection</header>
 
-  <button onclick="init()">เริ่มใช้งานกล้อง</button>
+  <main class="app">
 
-  <div class="app">
+    <!-- กล้อง -->
+    <div class="camera-wrapper">
+      <div id="camera-container"></div>
+      <canvas id="overlay"></canvas>
+    </div>
 
-    <div id="camera-container"></div>
+    <!-- ปุ่ม -->
+    <button class="start-btn" onclick="init()">เริ่มใช้งาน</button>
+    <button class="capture-btn" onclick="capture()">📸 บันทึกภาพ</button>
 
-    <div id="result" class="result-box">
+    <!-- ผลลัพธ์ -->
+    <div id="result" class="result waiting">
       รอการตรวจจับ...
     </div>
 
-  </div>
+  </main>
 
   <script src="script.js"></script>
 </body>
-
 </html>
-
