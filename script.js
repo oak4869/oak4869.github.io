@@ -1,73 +1,94 @@
 const URL = "./model/";
 
-let model = null;
-let webcam = null;
-let isRunning = false;
+let model, webcam, faceDetector;
+let currentLabel = "Waiting";
 
 async function init() {
-  if (isRunning) return; // กันกดซ้ำ
-  isRunning = true;
+  const result = document.getElementById("result");
+  result.innerText = "กำลังโหลดโมเดล...";
+  result.className = "result waiting";
 
-  const resultEl = document.getElementById("result");
-  resultEl.innerText = "กำลังโหลดโมเดล...";
-
-  // โหลดโมเดล
   model = await tmImage.load(
     URL + "model.json",
     URL + "metadata.json"
   );
 
-  console.log("model loaded");
-
-  // สร้าง webcam
-  webcam = new tmImage.Webcam(300, 300, true);
+  webcam = new tmImage.Webcam(360, 360, true);
   await webcam.setup();
   await webcam.play();
 
-  console.log("webcam ready", webcam.canvas);
+  document.getElementById("camera-container").innerHTML = "";
+  document.getElementById("camera-container").appendChild(webcam.canvas);
 
-  // แสดง canvas
-  const container = document.getElementById("camera-container");
-  container.innerHTML = "";
-  container.appendChild(webcam.canvas);
+  const overlay = document.getElementById("overlay");
+  overlay.width = webcam.canvas.width;
+  overlay.height = webcam.canvas.height;
 
-  resultEl.innerText = "กำลังตรวจจับ...";
-  window.requestAnimationFrame(loop);
+  faceDetector = new FaceDetection({
+    locateFile: file =>
+      `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`
+  });
+
+  faceDetector.setOptions({
+    model: "short",
+    minDetectionConfidence: 0.5
+  });
+
+  faceDetector.onResults(onFace);
+
+  loop();
 }
 
 async function loop() {
-  // 🔒 กันกรณี canvas ยังไม่พร้อม
-  if (!webcam || !webcam.canvas) {
-    window.requestAnimationFrame(loop);
-    return;
-  }
-
   webcam.update();
   await predict();
-  window.requestAnimationFrame(loop);
+  await faceDetector.send({ image: webcam.canvas });
+  requestAnimationFrame(loop);
 }
 
 async function predict() {
-  if (!model || !webcam || !webcam.canvas) return;
-
   const predictions = await model.predict(webcam.canvas);
-
-  // 🔍 debug ดูค่าจริง
-  console.log("predictions:", predictions);
-
-  if (!predictions || predictions.length === 0) {
-    document.getElementById("result").innerText = "ไม่พบผลการทำนาย";
-    return;
-  }
-
   predictions.sort((a, b) => b.probability - a.probability);
 
   const best = predictions[0];
-  const percent = (best.probability * 100).toFixed(2);
+  currentLabel = best.className;
+  const percent = (best.probability * 100).toFixed(1);
 
-  document.getElementById("result").innerHTML =
-    `ผลลัพธ์: <b>${best.className}</b><br>
-     ความมั่นใจ: <b>${percent}%</b>`;
+  const result = document.getElementById("result");
+  result.innerHTML = `${best.className} <br>${percent}%`;
+
+  if (best.className === "Mask") {
+    result.className = "result mask";
+  } else {
+    result.className = "result nomask";
+  }
 }
 
+function onFace(results) {
+  const canvas = document.getElementById("overlay");
+  const ctx = canvas.getContext("2d");
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  if (results.detections.length > 0) {
+    results.detections.forEach(det => {
+      const box = det.boundingBox;
+      ctx.strokeStyle = currentLabel === "Mask" ? "green" : "red";
+      ctx.lineWidth = 4;
+
+      ctx.strokeRect(
+        box.xCenter * canvas.width - (box.width * canvas.width) / 2,
+        box.yCenter * canvas.height - (box.height * canvas.height) / 2,
+        box.width * canvas.width,
+        box.height * canvas.height
+      );
+    });
+  }
+}
+
+// 📸 บันทึกภาพไว้ใช้ในรายงาน
+function capture() {
+  const link = document.createElement("a");
+  link.download = "mask-detection.png";
+  link.href = webcam.canvas.toDataURL("image/png");
+  link.click();
+}
